@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Chat</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="chat-container">
+      <header class="chat-header">
+        <div class="header-avatar">🤖</div>
+        <div class="header-info">
+          <h1>AI Assistant</h1>
+          <span class="status">Online</span>
+        </div>
+      </header>
+
+      <main class="message-list" id="messageList" aria-live="polite">
+        <div class="message message--bot">
+          <div class="message__avatar">🤖</div>
+          <div class="message__bubble">
+            <p>Hello! I'm your AI assistant. How can I help you today?</p>
+            <span class="message__time">Just now</span>
+          </div>
+        </div>
+      </main>
+
+      <footer class="chat-input-area">
+        <input
+          type="text"
+          id="messageInput"
+          class="chat-input"
+          placeholder="Type a message..."
+          aria-label="Message input"
+          autocomplete="off"
+        />
+        <button id="sendButton" class="send-button" aria-label="Send message">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            width="20"
+            height="20"
+          >
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+          </svg>
+        </button>
+      </footer>
+    </div>
+
+    <script src="chat.js" type="module"></script>
+  </body>
+</html>
