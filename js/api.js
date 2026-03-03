@@ -1,6 +1,6 @@
 
 const OPENROUTER_API_KEY =
-  "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";
+  "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";
 
 /**
  * Streams a chat completion response from OpenRouter.
