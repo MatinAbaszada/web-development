@@ -3,6 +3,39 @@
  * Handles message rendering, send interactions, and simulated bot responses.
  */
 
+// Define custom element for chat messages
+class ChatMessage extends HTMLElement {
+  connectedCallback() {
+    this.render();
+  }
+
+  render() {
+    const timestamp = this.getAttribute("timestamp") || "";
+
+    const bubble = document.createElement("div");
+    bubble.classList.add("message-bubble");
+
+    // Move child content into bubble
+    Array.from(this.childNodes).forEach((node) => {
+      bubble.appendChild(node.cloneNode(true));
+    });
+
+    // Add timestamp
+    if (timestamp) {
+      const time = document.createElement("span");
+      time.classList.add("message-time");
+      time.textContent = timestamp;
+      bubble.appendChild(time);
+    }
+
+    // Clear the element and rebuild
+    this.innerHTML = "";
+    this.appendChild(bubble);
+  }
+}
+
+customElements.define("chat-message", ChatMessage);
+
 const messageList = document.getElementById("messageList");
 const messageInput = document.getElementById("messageInput");
 const sendButton = document.getElementById("sendButton");
@@ -29,34 +62,21 @@ function getCurrentTime() {
 }
 
 /**
- * Creates and appends a message bubble to the message list.
+ * Creates and appends a message bubble to the message list using the custom element.
  * @param {string} text - The message text.
- * @param {"user"|"bot"} sender - Who sent the message.
+ * @param {"user"|"ai"} sender - Who sent the message.
  */
 function appendMessage(text, sender) {
-  const isUser = sender === "user";
+  const role = sender === "user" ? "user" : "ai";
+  const timestamp = getCurrentTime();
 
-  const messageEl = document.createElement("div");
-  messageEl.classList.add("message", isUser ? "message--user" : "message--bot");
-
-  const avatar = document.createElement("div");
-  avatar.classList.add("message__avatar");
-  avatar.textContent = isUser ? "🧑" : "🤖";
-
-  const bubble = document.createElement("div");
-  bubble.classList.add("message__bubble");
+  const messageEl = document.createElement("chat-message");
+  messageEl.setAttribute("role", role);
+  messageEl.setAttribute("timestamp", timestamp);
 
   const paragraph = document.createElement("p");
   paragraph.textContent = text;
-
-  const time = document.createElement("span");
-  time.classList.add("message__time");
-  time.textContent = getCurrentTime();
-
-  bubble.appendChild(paragraph);
-  bubble.appendChild(time);
-  messageEl.appendChild(avatar);
-  messageEl.appendChild(bubble);
+  messageEl.appendChild(paragraph);
 
   messageList.appendChild(messageEl);
   scrollToBottom();
@@ -67,13 +87,9 @@ function appendMessage(text, sender) {
  * @returns {HTMLElement} The indicator element (so it can be removed later).
  */
 function showTypingIndicator() {
-  const indicator = document.createElement("div");
-  indicator.classList.add("typing-indicator");
+  const indicator = document.createElement("chat-message");
   indicator.id = "typingIndicator";
-
-  const avatar = document.createElement("div");
-  avatar.classList.add("message__avatar");
-  avatar.textContent = "🤖";
+  indicator.setAttribute("role", "ai");
 
   const dots = document.createElement("div");
   dots.classList.add("typing-dots");
@@ -83,7 +99,6 @@ function showTypingIndicator() {
     dots.appendChild(span);
   }
 
-  indicator.appendChild(avatar);
   indicator.appendChild(dots);
   messageList.appendChild(indicator);
   scrollToBottom();

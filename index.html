@@ -4,49 +4,151 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body>
-    <div class="chat-container">
-      <header class="chat-header">
-        <div class="header-avatar">🤖</div>
-        <div class="header-info">
-          <h1>AI Assistant</h1>
-          <span class="status">Online</span>
-        </div>
-      </header>
-
-      <main class="message-list" id="messageList" aria-live="polite">
-        <div class="message message--bot">
-          <div class="message__avatar">🤖</div>
-          <div class="message__bubble">
-            <p>Hello! I'm your AI assistant. How can I help you today?</p>
-            <span class="message__time">Just now</span>
-          </div>
-        </div>
-      </main>
-
-      <footer class="chat-input-area">
-        <input
-          type="text"
-          id="messageInput"
-          class="chat-input"
-          placeholder="Type a message..."
-          aria-label="Message input"
-          autocomplete="off"
-        />
-        <button id="sendButton" class="send-button" aria-label="Send message">
+  <body
+    class="bg-gradient-to-br from-indigo-600 to-purple-700 min-h-screen flex items-center justify-center p-4"
+  >
+    <div
+      class="app-container w-full max-w-6xl h-[90vh] max-h-[900px] bg-white rounded-2xl shadow-2xl flex overflow-hidden"
+    >
+      <!-- Sidebar -->
+      <aside
+        class="sidebar w-64 bg-gray-50 border-r border-gray-200 flex flex-col"
+      >
+        <!-- New Chat Button -->
+        <button
+          class="new-chat-btn m-4 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-700 text-white rounded-lg font-semibold hover:shadow-lg transition-shadow flex items-center justify-center gap-2"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
             width="20"
             height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
           >
-            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+            <path d="M12 5v14M5 12h14" />
           </svg>
+          New Chat
         </button>
-      </footer>
+
+        <!-- Conversations List -->
+        <nav class="conversations-list flex-1 overflow-y-auto px-3 py-4">
+          <div
+            class="conversation-item active px-4 py-3 bg-white rounded-lg text-gray-900 font-medium cursor-pointer border-l-4 border-indigo-600 mb-2"
+          >
+            <div class="truncate">Project Discussion</div>
+            <div class="text-xs text-gray-500 mt-1">Today</div>
+          </div>
+          <div
+            class="conversation-item px-4 py-3 text-gray-700 rounded-lg cursor-pointer hover:bg-white transition-colors mb-2"
+          >
+            <div class="truncate">Travel Plans</div>
+            <div class="text-xs text-gray-500 mt-1">Yesterday</div>
+          </div>
+          <div
+            class="conversation-item px-4 py-3 text-gray-700 rounded-lg cursor-pointer hover:bg-white transition-colors"
+          >
+            <div class="truncate">Code Review Help</div>
+            <div class="text-xs text-gray-500 mt-1">2 days ago</div>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- Main Chat Area -->
+      <div class="chat-main flex-1 flex flex-col bg-white">
+        <!-- Header -->
+        <header
+          class="chat-header bg-gradient-to-r from-indigo-600 to-purple-700 text-white px-6 py-4 flex items-center gap-3 shadow-sm"
+        >
+          <div class="header-avatar text-2xl">🤖</div>
+          <div>
+            <h1 class="text-lg font-bold">AI Assistant</h1>
+            <span class="text-sm opacity-90 flex items-center gap-1">
+              <span
+                class="w-2 h-2 bg-green-400 rounded-full inline-block"
+              ></span>
+              Online
+            </span>
+          </div>
+        </header>
+
+        <!-- Message List -->
+        <main
+          class="message-list flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-4"
+          id="messageList"
+          aria-live="polite"
+        >
+          <!-- AI Message -->
+          <chat-message role="ai" timestamp="10:30 AM">
+            <p>Hello! I'm your AI assistant. How can I help you today?</p>
+          </chat-message>
+
+          <!-- User Message -->
+          <chat-message role="user" timestamp="10:32 AM">
+            <p>
+              I need help with building a chat application. Can you suggest a
+              good architecture?
+            </p>
+          </chat-message>
+
+          <!-- AI Message -->
+          <chat-message role="ai" timestamp="10:33 AM">
+            <p>
+              Absolutely! I'd recommend a component-based architecture with a
+              message queue pattern. This allows for scalable, maintainable
+              code. You could separate concerns into message handling, storage,
+              and UI components.
+            </p>
+          </chat-message>
+
+          <!-- User Message -->
+          <chat-message role="user" timestamp="10:35 AM">
+            <p>That sounds great. What about state management?</p>
+          </chat-message>
+
+          <!-- AI Message -->
+          <chat-message role="ai" timestamp="10:36 AM">
+            <p>
+              For state management, consider using a centralized store with
+              event-driven updates. This could be Redux, Zustand, or even a
+              custom solution depending on your needs. The key is keeping your
+              messages and UI state synchronized efficiently.
+            </p>
+          </chat-message>
+        </main>
+
+        <!-- Input Area -->
+        <footer
+          class="chat-input-area border-t border-gray-200 bg-white px-6 py-4 flex gap-3"
+        >
+          <textarea
+            id="messageInput"
+            class="chat-input flex-1 border-2 border-gray-300 rounded-lg px-4 py-3 font-inherit text-sm resize-none focus:outline-none focus:border-indigo-600 focus:shadow-lg transition-all"
+            placeholder="Type a message..."
+            aria-label="Message input"
+            rows="1"
+          ></textarea>
+          <button
+            id="sendButton"
+            class="send-button w-12 h-12 rounded-full bg-gradient-to-r from-indigo-600 to-purple-700 text-white flex-shrink-0 flex items-center justify-center hover:shadow-lg transition-shadow active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label="Send message"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              width="20"
+              height="20"
+            >
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+            </svg>
+          </button>
+        </footer>
+      </div>
     </div>
 
     <script src="chat.js" type="module"></script>
