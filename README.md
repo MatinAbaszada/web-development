@@ -1,54 +1,34 @@
 # AI Chat App
 
-A polished static AI chat UI with ESLint, Prettier, and Husky pre-commit hooks enforcing code quality.
+Simple browser chat app that connects to OpenRouter with streaming responses.
 
-## Features
+## What it includes
 
-- 💬 Clean chat interface with message bubbles
-- 🤖 Simulated bot responses with typing indicator
-- ✅ ESLint + Prettier configured and enforced via Husky pre-commit hook
-- 📱 Responsive design
+- Chat layout with sidebar and message area
+- Model dropdown
+- Streaming assistant reply output
+- ESLint and Prettier setup
 
-## Getting Started
+## Run
 
 ```bash
-# Install dependencies (sets up Husky automatically)
 npm install
-
-# Open index.html in your browser
 open index.html
 ```
 
-## Development
+## Dev commands
 
 ```bash
-# Lint JavaScript files
 npm run lint
-
-# Auto-fix lint issues
 npm run lint:fix
-
-# Check formatting
-npm run format:check
-
-# Auto-format all files
 npm run format
+npm run format:check
 ```
 
-## Code Quality
+## Files
 
-- **ESLint** — enforces JavaScript best practices
-- **Prettier** — ensures consistent formatting
-- **Husky + lint-staged** — runs linting and formatting checks on every commit, rejecting commits with errors
-
-## Project Structure
-
-```
-ai-chat-app/
-├── index.html        # Chat UI markup
-├── style.css         # Styling — bubbles, layout, animations
-├── chat.js           # Send logic, message rendering, bot simulation
-├── eslint.config.js  # ESLint flat config
-├── .prettierrc       # Prettier rules
-└── package.json      # Dev tooling & scripts
-```
+- `index.html` main page
+- `style.css` styles
+- `js/main.js` app flow and event handlers
+- `js/chat.js` message rendering helpers
+- `js/api.js` OpenRouter request logic
