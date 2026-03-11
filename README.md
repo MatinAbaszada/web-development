@@ -8,6 +8,7 @@ Simple browser chat app that connects to OpenRouter with streaming responses.
 - Model dropdown
 - Streaming assistant reply output
 - ESLint and Prettier setup
+- `pre-commit` git hooks
 
 ## Run
 
@@ -23,6 +24,20 @@ npm run lint
 npm run lint:fix
 npm run format
 npm run format:check
+```
+
+## Pre-commit setup
+
+Install `pre-commit` (for example with `pipx install pre-commit`), then install hooks:
+
+```bash
+npm run precommit:install
+```
+
+Run hooks manually on all files:
+
+```bash
+npm run precommit:run
 ```
 
 ## Files
