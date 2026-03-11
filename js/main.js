@@ -6,114 +6,132 @@ import {
 } from "./chat.js";
 import { streamCompletion, getAvailableModels } from "./api.js";
 
-// DOM elements
 const messageInput = document.getElementById("messageInput");
 const sendButton = document.getElementById("sendButton");
 const messageList = document.getElementById("messageList");
 const modelSelector = document.getElementById("modelSelector");
+const newChatButton = document.querySelector(".new-chat-btn");
 
-// Application state
-let messages = [];
-let currentModel = "arcee-ai/trinity-large-preview:free";
-let isStreaming = false;
+let chatHistory = [];
+let selectedModel = "arcee-ai/trinity-large-preview:free";
+let loading = false;
 
-
-async function initialize() {
-  // Set up event listeners
-  sendButton.addEventListener("click", handleSend);
-  messageInput.addEventListener("keydown", (event) => {
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault();
-      handleSend();
-    }
-  });
-
-  // Populate model selector if it exists
-  if (modelSelector) {
-    const models = await getAvailableModels();
-    models.forEach((model) => {
-      const option = document.createElement("option");
-      option.value = model.id;
-      option.textContent = model.name;
-      modelSelector.appendChild(option);
-    });
-
-    modelSelector.addEventListener("change", (e) => {
-      currentModel = e.target.value;
-    });
-
-    // Set default model
-    modelSelector.value = currentModel;
-  }
-
-  // Clear any existing messages from the static HTML preview
+function clearStarterMessages() {
   messageList.innerHTML = "";
 }
 
-
-async function handleSend() {
-  const text = messageInput.value.trim();
-
-  if (!text || isStreaming) {
+function addModelsToSelect(models) {
+  if (!modelSelector) {
     return;
   }
 
-  // Append user message to DOM
+  modelSelector.innerHTML = "";
+
+  for (let i = 0; i < models.length; i += 1) {
+    const model = models[i];
+    const option = document.createElement("option");
+    option.value = model.id;
+    option.textContent = model.name;
+    modelSelector.appendChild(option);
+  }
+
+  modelSelector.value = selectedModel;
+}
+
+function setLoading(value) {
+  loading = value;
+  sendButton.disabled = value;
+}
+
+async function loadModels() {
+  const models = await getAvailableModels();
+  addModelsToSelect(models);
+}
+
+function onModelChange(event) {
+  selectedModel = event.target.value;
+}
+
+function onInputKeyDown(event) {
+  if (event.key === "Enter" && event.shiftKey === false) {
+    event.preventDefault();
+    sendMessage();
+  }
+}
+
+function startNewChat() {
+  chatHistory = [];
+  messageList.innerHTML = "";
+  messageInput.value = "";
+  setLoading(false);
+  messageInput.focus();
+}
+
+async function sendMessage() {
+  const text = messageInput.value.trim();
+
+  if (!text || loading) {
+    return;
+  }
+
   appendMessage(text, "user", messageList);
   scrollToBottom(messageList);
 
-  // Add user message to history
-  messages.push({
+  chatHistory.push({
     role: "user",
     content: text,
   });
 
-  // Clear input field
   messageInput.value = "";
   messageInput.focus();
 
-  // Disable send button during streaming
-  isStreaming = true;
-  sendButton.disabled = true;
+  setLoading(true);
 
   try {
-    // Create empty AI message bubble
-    const aiMessageEl = createAIMessageBubble(messageList);
-    scrollToBottom(messageList);
+    const aiRow = createAIMessageBubble(messageList);
+    let finalText = "";
 
-    let fullResponse = "";
-
-    // Stream completion from OpenRouter
-    fullResponse = await streamCompletion(messages, currentModel, (chunk) => {
-      // Append each chunk to the message
-      appendTextToMessage(aiMessageEl, chunk);
+    await streamCompletion(chatHistory, selectedModel, (chunkText) => {
+      finalText += chunkText;
+      appendTextToMessage(aiRow, chunkText);
       scrollToBottom(messageList);
     });
 
-    // Add complete response to message history
-    messages.push({
+    chatHistory.push({
       role: "assistant",
-      content: fullResponse,
+      content: finalText,
     });
   } catch (error) {
-    console.error("Error streaming response:", error);
+    console.error("stream error", error);
 
-    // Append error message to UI
     appendMessage(
-      `Error: ${error.message}. Make sure you've set a valid OpenRouter API key in js/api.js`,
+      "Request failed. Please check the API key in js/api.js and try again.",
       "ai",
       messageList
     );
   } finally {
-    // Re-enable send button
-    isStreaming = false;
-    sendButton.disabled = false;
+    setLoading(false);
     messageInput.focus();
   }
 }
 
+async function startApp() {
+  clearStarterMessages();
+  await loadModels();
+
+  sendButton.addEventListener("click", sendMessage);
+  messageInput.addEventListener("keydown", onInputKeyDown);
+  if (newChatButton) {
+    newChatButton.addEventListener("click", startNewChat);
+  }
+
+  if (modelSelector) {
+    modelSelector.addEventListener("change", onModelChange);
+  }
+}
+
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initialize);
+  document.addEventListener("DOMContentLoaded", startApp);
 } else {
-  initialize();
+  startApp();
 }
