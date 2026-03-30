@@ -26,6 +26,6 @@ export default [
     },
   },
   {
-    ignores: ["dist/", "legacy-a3/", "node_modules/", ".husky/"],
+    ignores: ["dist/", ".next/", "legacy-a3/", "node_modules/", ".husky/"],
   },
 ];

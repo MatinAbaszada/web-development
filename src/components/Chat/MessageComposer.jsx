@@ -1,6 +1,10 @@
 import { useState } from "react";
 
-export default function MessageComposer({ onSendMessage, isLoading, disabled }) {
+export default function MessageComposer({
+  onSendMessage,
+  isLoading,
+  disabled,
+}) {
   const [draft, setDraft] = useState("");
 
   function handleSubmit(event) {
@@ -28,7 +32,11 @@ export default function MessageComposer({ onSendMessage, isLoading, disabled }) 
       <form className="flex gap-3" onSubmit={handleSubmit}>
         <textarea
           className="chat-input flex-1 border border-slate-300 rounded-md px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder={disabled ? "Create or select a conversation first" : "Type your message"}
+          placeholder={
+            disabled
+              ? "Create or select a conversation first"
+              : "Type your message"
+          }
           aria-label="Message input"
           rows="1"
           value={draft}

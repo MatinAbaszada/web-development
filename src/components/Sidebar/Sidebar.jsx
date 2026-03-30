@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { createConversation, getConversations } from "../../api/conversations.js";
+import {
+  createConversation,
+  getConversations,
+} from "../../api/conversations.js";
 import { getAvailableModels } from "../../api/llm.js";
 import ConversationList from "./ConversationList.jsx";
 import ModelSelector from "./ModelSelector.jsx";
@@ -71,7 +74,10 @@ export default function Sidebar({
   async function handleCreateConversation() {
     const conversation = await createConversation();
 
-    setConversations((currentConversations) => [conversation, ...currentConversations]);
+    setConversations((currentConversations) => [
+      conversation,
+      ...currentConversations,
+    ]);
     onConversationSelect(conversation.id);
   }
 

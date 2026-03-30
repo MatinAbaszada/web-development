@@ -1,11 +1,10 @@
 export const DEFAULT_MODEL_ID = "arcee-ai/trinity-large-preview:free";
 
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
-const OPENROUTER_API_KEY =
-  "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";
+const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY || "";
 
 export async function getAvailableModels() {
-  return Promise.resolve([
+  return [
     {
       id: "arcee-ai/trinity-large-preview:free",
       name: "Arcee Trinity Large",
@@ -14,7 +13,7 @@ export async function getAvailableModels() {
       id: "stepfun/step-3.5-flash:free",
       name: "StepFun 3.5 Flash",
     },
-  ]);
+  ];
 }
 
 function parseStreamLine(line, onChunk) {
@@ -30,8 +29,9 @@ function parseStreamLine(line, onChunk) {
 
   try {
     const parsed = JSON.parse(jsonPart);
-    const delta = parsed?.choices?.[0]?.delta;
-    const text = delta?.content;
+    const choice = parsed.choices && parsed.choices[0];
+    const delta = choice && choice.delta;
+    const text = delta && delta.content;
 
     if (text && onChunk) {
       onChunk(text);
@@ -45,7 +45,9 @@ function parseStreamLine(line, onChunk) {
 
 export async function streamCompletion({ messages, model, onChunk }) {
   if (!OPENROUTER_API_KEY) {
-    throw new Error("OpenRouter API key is missing.");
+    throw new Error(
+      "Add VITE_OPENROUTER_API_KEY to .env.local before running the app."
+    );
   }
 
   const response = await fetch(OPENROUTER_API_URL, {
@@ -123,11 +125,4 @@ export async function streamCompletion({ messages, model, onChunk }) {
   }
 
   return fullText;
-}
-
-export async function requestCompletion({ messages, model }) {
-  return streamCompletion({
-    messages,
-    model,
-  });
 }

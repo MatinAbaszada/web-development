@@ -1,7 +1,14 @@
-export default function ModelSelector({ models, selectedModel, onModelChange }) {
+export default function ModelSelector({
+  models,
+  selectedModel,
+  onModelChange,
+}) {
   return (
     <div className="px-4 pb-4 border-b border-slate-200">
-      <label htmlFor="modelSelector" className="block text-xs font-semibold text-slate-600 mb-2">
+      <label
+        htmlFor="modelSelector"
+        className="block text-xs font-semibold text-slate-600 mb-2"
+      >
         Model
       </label>
       <select

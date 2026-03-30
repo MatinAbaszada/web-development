@@ -1,6 +1,3 @@
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-
 function formatTime(createdAt) {
   return new Date(createdAt).toLocaleTimeString([], {
     hour: "2-digit",
@@ -10,19 +7,15 @@ function formatTime(createdAt) {
 
 export default function Message({ message }) {
   const isUser = message.role === "user";
-  const rowClassName = isUser ? "chat-row chat-row-user" : "chat-row chat-row-ai";
+  const rowClassName = isUser
+    ? "chat-row chat-row-user"
+    : "chat-row chat-row-ai";
 
   return (
     <div className={rowClassName}>
       <div className="chat-avatar">{isUser ? "U" : "A"}</div>
       <div className="chat-bubble-wrap">
-        <div className="chat-bubble chat-markdown">
-          {isUser ? (
-            message.text
-          ) : (
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.text}</ReactMarkdown>
-          )}
-        </div>
+        <p className="chat-bubble chat-text">{message.text}</p>
         <span className="chat-time">{formatTime(message.createdAt)}</span>
       </div>
     </div>

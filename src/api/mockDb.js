@@ -105,7 +105,9 @@ export function createMessageRecord({ conversationId, role, text }) {
   nextMessageNumber += 1;
   messagesDb.push(message);
 
-  const conversation = conversationsDb.find((item) => item.id === conversationId);
+  const conversation = conversationsDb.find(
+    (item) => item.id === conversationId
+  );
 
   if (conversation) {
     conversation.updatedAt = currentDate;

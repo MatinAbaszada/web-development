@@ -22,7 +22,8 @@ export default function App() {
         return;
       }
 
-      const nextMessages = await getMessagesByConversationId(activeConversationId);
+      const nextMessages =
+        await getMessagesByConversationId(activeConversationId);
 
       if (!ignore) {
         setMessages(nextMessages);
@@ -135,9 +136,11 @@ export default function App() {
       });
 
       setMessages((currentMessages) => {
-        const messagesWithoutTemporaryAssistant = currentMessages.filter((message) => {
-          return message.id !== temporaryAssistantId;
-        });
+        const messagesWithoutTemporaryAssistant = currentMessages.filter(
+          (message) => {
+            return message.id !== temporaryAssistantId;
+          }
+        );
 
         return [...messagesWithoutTemporaryAssistant, fallbackMessage];
       });

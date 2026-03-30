@@ -5,9 +5,11 @@ import {
 } from "./mockDb.js";
 
 export async function getConversations() {
-  const conversations = [...getConversationsSnapshot()].sort((leftItem, rightItem) => {
-    return rightItem.updatedAt.localeCompare(leftItem.updatedAt);
-  });
+  const conversations = [...getConversationsSnapshot()].sort(
+    (leftItem, rightItem) => {
+      return rightItem.updatedAt.localeCompare(leftItem.updatedAt);
+    }
+  );
 
   return resolveWithDelay(conversations);
 }
