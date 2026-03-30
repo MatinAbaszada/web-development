@@ -1,54 +1,59 @@
 # AI Chat App
 
-A polished static AI chat UI with ESLint, Prettier, and Husky pre-commit hooks enforcing code quality.
+This branch is the React version of the chat app. It keeps the same basic layout from the earlier assignment, but the UI is split into React components and the data is loaded through small API helper files.
 
-## Features
+## What is in this project
 
-- 💬 Clean chat interface with message bubbles
-- 🤖 Simulated bot responses with typing indicator
-- ✅ ESLint + Prettier configured and enforced via Husky pre-commit hook
-- 📱 Responsive design
+- React app built with Vite
+- Sidebar with conversations and model picker
+- Chat area with message list and message form
+- Mock conversation and message data
+- Streaming reply support for OpenRouter
+- ESLint, Prettier, and pre-commit hooks
 
-## Getting Started
+## Old assignment files
+
+The plain HTML, CSS, and JavaScript version from the earlier branch is saved in `legacy-a3/` so the old work is still visible.
+
+## Run the app
 
 ```bash
-# Install dependencies (sets up Husky automatically)
 npm install
-
-# Open index.html in your browser
-open index.html
+npm run dev
 ```
 
-## Development
+Vite will print a local URL in the terminal, usually `http://localhost:5173`.
+
+## API key
+
+Create a `.env.local` file in the project root and add:
 
 ```bash
-# Lint JavaScript files
+VITE_OPENROUTER_API_KEY=your_key_here
+```
+
+This keeps the real key out of git. In a frontend app, this is still visible in the browser bundle, so it is fine for class demos but not for a production app.
+
+## Useful commands
+
+```bash
+npm run dev
+npm run build
+npm run preview
 npm run lint
-
-# Auto-fix lint issues
-npm run lint:fix
-
-# Check formatting
-npm run format:check
-
-# Auto-format all files
 npm run format
 ```
 
-## Code Quality
+## Pre-commit
 
-- **ESLint** — enforces JavaScript best practices
-- **Prettier** — ensures consistent formatting
-- **Husky + lint-staged** — runs linting and formatting checks on every commit, rejecting commits with errors
+Install `pre-commit` first if you do not already have it, then run:
 
-## Project Structure
-
+```bash
+npm run precommit:install
 ```
-ai-chat-app/
-├── index.html        # Chat UI markup
-├── style.css         # Styling — bubbles, layout, animations
-├── chat.js           # Send logic, message rendering, bot simulation
-├── eslint.config.js  # ESLint flat config
-├── .prettierrc       # Prettier rules
-└── package.json      # Dev tooling & scripts
+
+Run hooks manually on all files:
+
+```bash
+npm run precommit:run
 ```

@@ -2,28 +2,28 @@
   "name": "ai-chat-app",
   "version": "1.0.0",
   "type": "module",
-  "description": "A static AI chat UI with ESLint, Prettier, and Husky",
+  "description": "A React AI chat UI built with Vite",
   "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky"
+    "precommit:install": "pre-commit install",
+    "precommit:run": "pre-commit run --all-files"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
+    "@vitejs/plugin-react": "^4.3.4",
     "eslint": "^9.20.0",
     "globals": "^15.15.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^15.4.3",
-    "prettier": "^3.5.1"
-  },
-  "lint-staged": {
-    "*.{js,html,css,json,md}": [
-      "prettier --write"
-    ],
-    "*.js": [
-      "eslint --fix"
-    ]
+    "prettier": "^3.5.1",
+    "vite": "^6.2.0"
   }
 }
