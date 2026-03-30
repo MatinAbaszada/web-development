@@ -21,6 +21,6 @@ export default [
     },
   },
   {
-    ignores: ["node_modules/", ".husky/"],
+    ignores: ["node_modules/", ".husky/", ".next/"],
   },
 ];

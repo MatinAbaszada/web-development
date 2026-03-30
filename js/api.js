@@ -1,6 +1,4 @@
-const OPENROUTER_API_KEY =
-  "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";
-
+const OPENROUTER_API_KEY = "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";
 export async function streamCompletion(messages, model, onChunk) {
   const requestBody = {
     model: model,
@@ -11,12 +9,12 @@ export async function streamCompletion(messages, model, onChunk) {
   const response = await fetch(
     "https://openrouter.ai/api/v1/chat/completions",
     {
-      method: "POST",
+    method: "POST",
       headers: {
-        Authorization: `Bearer ${OPENROUTER_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestBody),
+      Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestBody),
     }
   );
 

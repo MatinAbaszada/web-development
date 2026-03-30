@@ -4,6 +4,7 @@
   "type": "module",
   "description": "A static AI chat UI with ESLint and Prettier",
   "scripts": {
+    "start": "node server.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
