@@ -1,103 +1,103 @@
-
-const OPENROUTER_API_KEY =
-  "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";
-
-/**
- * Streams a chat completion response from OpenRouter.
- * @param {Array} messages - Conversation history with role and content.
- * @param {string} model - The model to use
- * @param {Function} onChunk - Callback function called with each text chunk.
- * @returns {Promise<string>} The complete assistant response.
- */
+const OPENROUTER_API_KEY = "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";
 export async function streamCompletion(messages, model, onChunk) {
+  const requestBody = {
+    model: model,
+    messages: messages,
+    stream: true,
+  };
+
   const response = await fetch(
     "https://openrouter.ai/api/v1/chat/completions",
     {
-      method: "POST",
+    method: "POST",
       headers: {
-        Authorization: `Bearer ${OPENROUTER_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model,
-        messages,
-        stream: true,
-      }),
+      Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestBody),
     }
   );
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(
-      `OpenRouter API Error: ${error.error?.message || response.statusText}`
-    );
+    let message = response.statusText;
+
+    try {
+      const errorJson = await response.json();
+      if (errorJson && errorJson.error && errorJson.error.message) {
+        message = errorJson.error.message;
+      }
+    } catch {
+      // keep default message if parsing fails
+    }
+
+    throw new Error(message);
   }
 
-  let fullResponse = "";
+  if (!response.body) {
+    throw new Error("No response body from API");
+  }
+
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
+  let fullText = "";
+  let keepReading = true;
 
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
+  while (keepReading) {
+    const chunkData = await reader.read();
 
-      if (done) {
-        break;
+    if (chunkData.done) {
+      keepReading = false;
+      continue;
+    }
+
+    const textPart = decoder.decode(chunkData.value, { stream: true });
+    const lines = textPart.split("\n");
+
+    for (let i = 0; i < lines.length; i += 1) {
+      const line = lines[i].trim();
+
+      if (!line || line.indexOf("data: ") !== 0) {
+        continue;
       }
 
-      // Decode the chunk
-      const chunk = decoder.decode(value, { stream: true });
+      const jsonPart = line.replace("data: ", "").trim();
 
-      // Split by newlines and process each line
-      const lines = chunk.split("\n");
+      if (jsonPart === "[DONE]") {
+        continue;
+      }
 
-      for (const line of lines) {
-        // Skip empty lines and non-data lines
-        if (!line.trim() || !line.startsWith("data: ")) {
-          continue;
+      try {
+        const parsed = JSON.parse(jsonPart);
+        const delta =
+          parsed.choices && parsed.choices[0] && parsed.choices[0].delta;
+        const text = delta && delta.content;
+
+        if (text) {
+          fullText += text;
+          onChunk(text);
         }
-
-        // Extract JSON from "data: " prefix
-        const jsonStr = line.slice(6).trim();
-
-        // Skip [DONE] marker
-        if (jsonStr === "[DONE]") {
-          continue;
-        }
-
-        try {
-          const parsed = JSON.parse(jsonStr);
-
-          // Extract content delta from the response
-          const content = parsed.choices?.[0]?.delta?.content;
-          if (content) {
-            fullResponse += content;
-            // Call the callback with each chunk
-            onChunk(content);
-          }
-        } catch {
-          // Silent fail on JSON parse errors (malformed chunks)
-          continue;
-        }
+      } catch {
+        // skip malformed line
       }
     }
-  } finally {
-    reader.releaseLock();
   }
 
-  return fullResponse;
+  reader.releaseLock();
+  return fullText;
 }
 
-
 export async function getAvailableModels() {
-  return [
-    {
-      id: "arcee-ai/trinity-large-preview:free",
-      name: "Arcee AI: Trinity Large",
-    },
-    {
-      id: "stepfun/step-3.5-flash:free",
-      name: "StepFun: Step 3.5 Flash",
-    }
-  ];
+  const models = [];
+
+  models.push({
+    id: "arcee-ai/trinity-large-preview:free",
+    name: "Arcee Trinity Large",
+  });
+
+  models.push({
+    id: "stepfun/step-3.5-flash:free",
+    name: "StepFun 3.5 Flash",
+  });
+
+  return models;
 }
