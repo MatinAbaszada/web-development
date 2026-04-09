@@ -4,8 +4,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "AI Chat App",
-  description:
-    "A Next.js chat app with mock server routes and OpenRouter replies.",
+  description: "A Next.js chat app with Prisma and TanStack Query.",
 };
 
 export default function RootLayout({
