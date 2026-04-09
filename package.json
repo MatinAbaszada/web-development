@@ -1,31 +1,31 @@
 {
   "name": "ai-chat-app",
-  "version": "1.0.0",
-  "type": "module",
-  "description": "A React AI chat UI built with Vite",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "precommit:install": "pre-commit install",
     "precommit:run": "pre-commit run --all-files"
   },
   "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-markdown": "^10.1.0",
-    "remark-gfm": "^4.0.1"
+    "next": "16.2.3",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
   },
   "devDependencies": {
-    "@eslint/js": "^9.20.0",
-    "@vitejs/plugin-react": "^4.3.4",
-    "eslint": "^9.20.0",
-    "globals": "^15.15.0",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.3",
     "prettier": "^3.5.1",
-    "vite": "^6.2.0"
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }
