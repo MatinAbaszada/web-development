@@ -1,0 +1,13 @@
+{
+  "files.autoSave": "afterDelay",
+  "search.useIgnoreFiles": true,
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/dist": true
+  },
+  "files.exclude": {
+    "**/.next": true,
+    "**/dist": true
+  }
+}
