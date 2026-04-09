@@ -6,6 +6,8 @@ interface ConversationItemProps {
   conversation: Conversation;
   isActive: boolean;
   onClick: (conversationId: string) => void;
+  onDelete: (conversationId: string) => void;
+  isDeleting: boolean;
 }
 
 function formatUpdatedAt(updatedAt: string) {
@@ -32,21 +34,33 @@ export default function ConversationItem({
   conversation,
   isActive,
   onClick,
+  onDelete,
+  isDeleting,
 }: ConversationItemProps) {
   const itemClassName = isActive
-    ? "conversation-item active mb-2 w-full rounded-md px-3 py-2 text-left"
-    : "conversation-item mb-2 w-full rounded-md px-3 py-2 text-left";
+    ? "conversation-item active flex-1 rounded-md px-3 py-2 text-left"
+    : "conversation-item flex-1 rounded-md px-3 py-2 text-left";
 
   return (
-    <button
-      type="button"
-      className={itemClassName}
-      onClick={() => onClick(conversation.id)}
-    >
-      <div className="truncate">{conversation.title}</div>
-      <div className="mt-1 text-xs text-slate-500">
-        {formatUpdatedAt(conversation.updatedAt)}
-      </div>
-    </button>
+    <div className="mb-2 flex items-start gap-2">
+      <button
+        type="button"
+        className={itemClassName}
+        onClick={() => onClick(conversation.id)}
+      >
+        <div className="truncate">{conversation.title}</div>
+        <div className="mt-1 text-xs text-slate-500">
+          {formatUpdatedAt(conversation.updatedAt)}
+        </div>
+      </button>
+      <button
+        type="button"
+        className="rounded-md border border-slate-200 px-2 py-2 text-xs text-slate-500 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+        disabled={isDeleting}
+        onClick={() => onDelete(conversation.id)}
+      >
+        {isDeleting ? "..." : "X"}
+      </button>
+    </div>
   );
 }

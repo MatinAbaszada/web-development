@@ -1,15 +1,14 @@
 import { NextResponse } from "next/server";
 import prisma from "@/server/prisma";
 
-type MessagesRouteContext = {
+type ConversationRouteContext = {
   params: Promise<{
     conversationId: string;
   }>;
 };
 
-export async function GET(_: Request, { params }: MessagesRouteContext) {
+export async function DELETE(_: Request, { params }: ConversationRouteContext) {
   const { conversationId } = await params;
-
   const conversation = await prisma.conversation.findUnique({
     where: {
       id: conversationId,
@@ -27,14 +26,11 @@ export async function GET(_: Request, { params }: MessagesRouteContext) {
     );
   }
 
-  const messages = await prisma.message.findMany({
+  await prisma.conversation.delete({
     where: {
-      conversationId,
-    },
-    orderBy: {
-      createdAt: "asc",
+      id: conversationId,
     },
   });
 
-  return NextResponse.json(messages);
+  return NextResponse.json(conversation);
 }

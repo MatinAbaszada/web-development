@@ -5,12 +5,16 @@ interface ConversationListProps {
   conversations: Conversation[];
   activeConversationId: string;
   onConversationSelect: (conversationId: string) => void;
+  onConversationDelete: (conversationId: string) => void;
+  deletingConversationId: string;
 }
 
 export default function ConversationList({
   conversations,
   activeConversationId,
   onConversationSelect,
+  onConversationDelete,
+  deletingConversationId,
 }: ConversationListProps) {
   return (
     <nav className="conversations-list flex-1 overflow-y-auto p-3">
@@ -20,6 +24,8 @@ export default function ConversationList({
           conversation={conversation}
           isActive={conversation.id === activeConversationId}
           onClick={onConversationSelect}
+          onDelete={onConversationDelete}
+          isDeleting={deletingConversationId === conversation.id}
         />
       ))}
     </nav>

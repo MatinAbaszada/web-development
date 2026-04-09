@@ -1,15 +1,25 @@
 import { NextResponse } from "next/server";
-import {
-  createConversationRecord,
-  getConversationsSnapshot,
-} from "@/server/mockDb";
+import prisma from "@/server/prisma";
 
 export async function GET() {
-  return NextResponse.json(getConversationsSnapshot());
+  const conversations = await prisma.conversation.findMany({
+    orderBy: {
+      updatedAt: "desc",
+    },
+  });
+
+  return NextResponse.json(conversations);
 }
 
 export async function POST() {
-  return NextResponse.json(createConversationRecord(), {
+  const count = await prisma.conversation.count();
+  const conversation = await prisma.conversation.create({
+    data: {
+      title: `New Chat ${count + 1}`,
+    },
+  });
+
+  return NextResponse.json(conversation, {
     status: 201,
   });
 }

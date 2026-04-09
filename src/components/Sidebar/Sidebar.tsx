@@ -1,81 +1,74 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import ConversationList from "@/components/Sidebar/ConversationList";
 import ModelSelector from "@/components/Sidebar/ModelSelector";
-import { createConversation, getConversations } from "@/lib/api/conversations";
+import {
+  createConversation,
+  deleteConversation,
+  getConversations,
+} from "@/lib/api/conversations";
 import { AVAILABLE_MODELS } from "@/lib/models";
-import type { Conversation } from "@/types/chat";
 
 interface SidebarProps {
   activeConversationId: string;
-  refreshKey: number;
   selectedModel: string;
   onModelChange: (modelId: string) => void;
 }
 
 export default function Sidebar({
   activeConversationId,
-  refreshKey,
   selectedModel,
   onModelChange,
 }: SidebarProps) {
   const router = useRouter();
-  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const queryClient = useQueryClient();
+  const conversationsQuery = useQuery({
+    queryKey: ["conversations"],
+    queryFn: getConversations,
+  });
+  const conversations = conversationsQuery.data ?? [];
+  const createConversationMutation = useMutation({
+    mutationFn: createConversation,
+    onSuccess: async (conversation) => {
+      await queryClient.invalidateQueries({
+        queryKey: ["conversations"],
+      });
+      router.push(`/conversations/${conversation.id}`);
+    },
+  });
+  const deleteConversationMutation = useMutation({
+    mutationFn: deleteConversation,
+    onSuccess: async (_, conversationId) => {
+      const nextConversation = conversations.find((conversation) => {
+        return conversation.id !== conversationId;
+      });
 
-  useEffect(() => {
-    let ignore = false;
+      await queryClient.invalidateQueries({
+        queryKey: ["conversations"],
+      });
 
-    async function loadConversations() {
-      const conversationItems = await getConversations();
-
-      if (!ignore) {
-        setConversations(conversationItems);
+      if (activeConversationId === conversationId) {
+        if (nextConversation) {
+          router.push(`/conversations/${nextConversation.id}`);
+        } else {
+          router.push("/");
+        }
       }
-    }
-
-    void loadConversations();
-
-    return () => {
-      ignore = true;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (refreshKey === 0) {
-      return;
-    }
-
-    let ignore = false;
-
-    async function refreshConversations() {
-      const conversationItems = await getConversations();
-
-      if (!ignore) {
-        setConversations(conversationItems);
-      }
-    }
-
-    void refreshConversations();
-
-    return () => {
-      ignore = true;
-    };
-  }, [refreshKey]);
+    },
+  });
 
   function handleConversationSelect(conversationId: string) {
     router.push(`/conversations/${conversationId}`);
   }
 
   async function handleCreateConversation() {
-    const conversation = await createConversation();
+    await createConversationMutation.mutateAsync();
+  }
 
-    setConversations((currentConversations) => [
-      conversation,
-      ...currentConversations,
-    ]);
-    router.push(`/conversations/${conversation.id}`);
+  function handleConversationDelete(conversationId: string) {
+    deleteConversationMutation.mutate(conversationId);
   }
 
   return (
@@ -83,9 +76,10 @@ export default function Sidebar({
       <button
         type="button"
         className="new-chat-btn m-4 rounded-md bg-blue-600 px-4 py-3 font-semibold text-white transition-colors hover:bg-blue-700"
+        disabled={createConversationMutation.isPending}
         onClick={handleCreateConversation}
       >
-        New Chat
+        {createConversationMutation.isPending ? "Creating..." : "New Chat"}
       </button>
 
       <ModelSelector
@@ -98,6 +92,8 @@ export default function Sidebar({
         conversations={conversations}
         activeConversationId={activeConversationId}
         onConversationSelect={handleConversationSelect}
+        onConversationDelete={handleConversationDelete}
+        deletingConversationId={deleteConversationMutation.variables ?? ""}
       />
     </aside>
   );
