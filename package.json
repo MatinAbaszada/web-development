@@ -1,29 +1,39 @@
 {
   "name": "ai-chat-app",
-  "version": "1.0.0",
-  "type": "module",
-  "description": "A static AI chat UI with ESLint, Prettier, and Husky",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky"
+    "precommit:install": "pre-commit install",
+    "precommit:run": "pre-commit run --all-files"
+  },
+  "dependencies": {
+    "@ai-sdk/react": "^3.0.158",
+    "@openrouter/ai-sdk-provider": "^2.5.1",
+    "@prisma/adapter-better-sqlite3": "^7.7.0",
+    "@prisma/client": "^7.7.0",
+    "ai": "^6.0.156",
+    "dotenv": "^17.4.1",
+    "next": "16.2.3",
+    "pre-commit": "^1.2.2",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
   },
   "devDependencies": {
-    "@eslint/js": "^9.20.0",
-    "eslint": "^9.20.0",
-    "globals": "^15.15.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^15.4.3",
-    "prettier": "^3.5.1"
-  },
-  "lint-staged": {
-    "*.{js,html,css,json,md}": [
-      "prettier --write"
-    ],
-    "*.js": [
-      "eslint --fix"
-    ]
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.3",
+    "prettier": "^3.5.1",
+    "prisma": "^7.7.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }

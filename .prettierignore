@@ -1,2 +1,7 @@
 node_modules/
 .husky/
+.next/
+dist/
+legacy-a4/
+legacy-a5/
+legacy-a6/
