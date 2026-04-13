@@ -1,9 +1,9 @@
 import MessageComposer from "@/components/Chat/MessageComposer";
 import MessageList from "@/components/Chat/MessageList";
-import type { ChatMessage } from "@/types/chat";
+import type { ChatUIMessage } from "@/types/chat";
 
 interface ChatPanelProps {
-  messages: ChatMessage[];
+  messages: ChatUIMessage[];
   onSendMessage: (text: string) => Promise<void>;
   isLoading: boolean;
   hasActiveConversation: boolean;

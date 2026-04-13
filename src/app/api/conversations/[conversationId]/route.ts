@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import prisma from "@/server/prisma";
+import { ChatStoreError, deleteConversation } from "@/server/chat-store";
 
 type ConversationRouteContext = {
   params: Promise<{
@@ -9,28 +9,21 @@ type ConversationRouteContext = {
 
 export async function DELETE(_: Request, { params }: ConversationRouteContext) {
   const { conversationId } = await params;
-  const conversation = await prisma.conversation.findUnique({
-    where: {
-      id: conversationId,
-    },
-  });
 
-  if (!conversation) {
+  try {
+    const conversation = await deleteConversation(conversationId);
+    return NextResponse.json(conversation);
+  } catch (error) {
+    const status = error instanceof ChatStoreError ? error.status : 500;
+    const message = error instanceof Error ? error.message : "Request failed.";
+
     return NextResponse.json(
       {
-        error: "Conversation not found.",
+        error: message,
       },
       {
-        status: 404,
+        status,
       }
     );
   }
-
-  await prisma.conversation.delete({
-    where: {
-      id: conversationId,
-    },
-  });
-
-  return NextResponse.json(conversation);
 }

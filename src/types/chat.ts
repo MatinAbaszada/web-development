@@ -1,3 +1,5 @@
+import type { UIMessage } from "ai";
+
 export type MessageRole = "user" | "assistant";
 
 export interface Conversation {
@@ -13,6 +15,10 @@ export interface ChatMessage {
   text: string;
   createdAt: string;
 }
+
+export type ChatUIMessage = UIMessage<{
+  createdAt?: string;
+}>;
 
 export interface ModelOption {
   id: string;

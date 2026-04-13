@@ -3,10 +3,10 @@
 import { useEffect, useRef } from "react";
 import LoadingIndicator from "@/components/Chat/LoadingIndicator";
 import Message from "@/components/Chat/Message";
-import type { ChatMessage } from "@/types/chat";
+import type { ChatUIMessage } from "@/types/chat";
 
 interface MessageListProps {
-  messages: ChatMessage[];
+  messages: ChatUIMessage[];
   isLoading: boolean;
 }
 

@@ -1,103 +1,66 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { DefaultChatTransport } from "ai";
+import { useChat } from "@ai-sdk/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ChatPanel from "@/components/Chat/ChatPanel";
 import Sidebar from "@/components/Sidebar/Sidebar";
-import { createMessage, getMessagesByConversationId } from "@/lib/api/messages";
-import { requestAssistantReply } from "@/lib/api/llm";
 import { DEFAULT_MODEL_ID } from "@/lib/models";
-import type { ChatMessage } from "@/types/chat";
+import type { ChatUIMessage, Conversation } from "@/types/chat";
 
 interface ChatAppProps {
   activeConversationId: string;
+  initialConversations: Conversation[];
+  initialMessages: ChatUIMessage[];
 }
 
 function getErrorMessage(error: unknown) {
   return error instanceof Error ? error.message : "Request failed.";
 }
 
-export default function ChatApp({ activeConversationId }: ChatAppProps) {
-  const queryClient = useQueryClient();
+export default function ChatApp({
+  activeConversationId,
+  initialConversations,
+  initialMessages,
+}: ChatAppProps) {
+  const router = useRouter();
   const [selectedModel, setSelectedModel] = useState(DEFAULT_MODEL_ID);
   const [errorMessage, setErrorMessage] = useState("");
-  const messagesQuery = useQuery({
-    queryKey: ["messages", activeConversationId],
-    queryFn: () => getMessagesByConversationId(activeConversationId),
-    enabled: Boolean(activeConversationId),
-  });
-  const messages = messagesQuery.data ?? [];
-  const sendMessageMutation = useMutation({
-    mutationFn: async (text: string) => {
-      const currentMessages =
-        queryClient.getQueryData<ChatMessage[]>([
-          "messages",
-          activeConversationId,
-        ]) ?? [];
-      const realMessages = currentMessages.filter((message) => {
-        return message.id.startsWith("temp-user-") === false;
-      });
-      const savedUserMessage = await createMessage({
-        conversationId: activeConversationId,
-        role: "user",
-        text,
-      });
-      const assistantText = await requestAssistantReply({
-        messages: [...realMessages, savedUserMessage],
-        model: selectedModel,
-      });
-
-      await createMessage({
-        conversationId: activeConversationId,
-        role: "assistant",
-        text: assistantText,
-      });
+  const { messages, sendMessage, status, error } = useChat<ChatUIMessage>({
+    messages: initialMessages,
+    transport: new DefaultChatTransport({
+      api: "/api/chat",
+      prepareSendMessagesRequest: ({ messages: nextMessages }) => {
+        return {
+          body: {
+            conversationId: activeConversationId,
+            model: selectedModel,
+            message: nextMessages[nextMessages.length - 1],
+          },
+        };
+      },
+    }),
+    onFinish: () => {
+      router.refresh();
     },
-    onMutate: async (text: string) => {
-      setErrorMessage("");
-      await queryClient.cancelQueries({
-        queryKey: ["messages", activeConversationId],
-      });
-
-      const temporaryUserMessage: ChatMessage = {
-        id: `temp-user-${Date.now()}`,
-        conversationId: activeConversationId,
-        role: "user",
-        text,
-        createdAt: new Date().toISOString(),
-      };
-
-      queryClient.setQueryData<ChatMessage[]>(
-        ["messages", activeConversationId],
-        (currentMessages) => {
-          return [...(currentMessages ?? []), temporaryUserMessage];
-        }
-      );
-    },
-    onError: (error) => {
-      setErrorMessage(getErrorMessage(error));
-    },
-    onSettled: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["messages", activeConversationId],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ["conversations"],
-      });
+    onError: (nextError) => {
+      setErrorMessage(getErrorMessage(nextError));
     },
   });
-  const queryErrorMessage = messagesQuery.error
-    ? getErrorMessage(messagesQuery.error)
-    : "";
-  const visibleErrorMessage = errorMessage || queryErrorMessage;
-  const isLoading = messagesQuery.isLoading || sendMessageMutation.isPending;
+  const visibleErrorMessage =
+    errorMessage || (error ? getErrorMessage(error) : "");
+  const isLoading = status === "submitted" || status === "streaming";
 
   async function handleSendMessage(text: string) {
-    if (!activeConversationId || sendMessageMutation.isPending) {
+    if (!activeConversationId || isLoading) {
       return;
     }
 
-    await sendMessageMutation.mutateAsync(text);
+    setErrorMessage("");
+    await sendMessage({
+      text,
+    });
   }
 
   return (
@@ -105,6 +68,7 @@ export default function ChatApp({ activeConversationId }: ChatAppProps) {
       <div className="app-container mx-auto flex h-[92vh] w-full max-w-6xl overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
         <Sidebar
           activeConversationId={activeConversationId}
+          initialConversations={initialConversations}
           selectedModel={selectedModel}
           onModelChange={setSelectedModel}
         />
