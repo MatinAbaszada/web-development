@@ -32,7 +32,3 @@ next-env.d.ts
 
 /next-migration-temp/
 /eslint.config.js.bak
-
-/prisma/*.db
-/prisma/*.db-journal
-/src/generated/prisma

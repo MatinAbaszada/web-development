@@ -13,15 +13,7 @@
     "precommit:run": "pre-commit run --all-files"
   },
   "dependencies": {
-    "@ai-sdk/react": "^3.0.158",
-    "@openrouter/ai-sdk-provider": "^2.5.1",
-    "@prisma/adapter-better-sqlite3": "^7.7.0",
-    "@prisma/client": "^7.7.0",
-    "@tanstack/react-query": "^5.99.2",
-    "ai": "^6.0.156",
-    "dotenv": "^17.4.1",
     "next": "16.2.3",
-    "pre-commit": "^1.2.2",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
@@ -33,7 +25,6 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.3",
     "prettier": "^3.5.1",
-    "prisma": "^7.7.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
