@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import prisma from "@/server/prisma";
+import { deleteConversation } from "@/server/conversations";
 
 type ConversationRouteContext = {
   params: Promise<{
@@ -9,28 +9,32 @@ type ConversationRouteContext = {
 
 export async function DELETE(_: Request, { params }: ConversationRouteContext) {
   const { conversationId } = await params;
-  const conversation = await prisma.conversation.findUnique({
-    where: {
-      id: conversationId,
-    },
-  });
 
-  if (!conversation) {
+  try {
+    const conversation = await deleteConversation(conversationId);
+
+    if (!conversation) {
+      return NextResponse.json(
+        {
+          error: "Conversation not found.",
+        },
+        {
+          status: 404,
+        }
+      );
+    }
+
+    return NextResponse.json(conversation);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Request failed.";
+
     return NextResponse.json(
       {
-        error: "Conversation not found.",
+        error: message,
       },
       {
-        status: 404,
+        status: 500,
       }
     );
   }
-
-  await prisma.conversation.delete({
-    where: {
-      id: conversationId,
-    },
-  });
-
-  return NextResponse.json(conversation);
 }

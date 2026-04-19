@@ -1,25 +1,19 @@
 import { redirect } from "next/navigation";
-import prisma from "@/server/prisma";
+import {
+  createConversation,
+  getLatestConversation,
+} from "@/server/conversations";
 
 export const dynamic = "force-dynamic";
 
 export default async function Page() {
-  const conversation = await prisma.conversation.findFirst({
-    orderBy: {
-      updatedAt: "desc",
-    },
-  });
+  const conversation = await getLatestConversation();
 
   if (conversation) {
-    redirect(`/conversations/${conversation.id}`);
+    redirect(`/chats/${conversation.id}`);
   }
 
-  const count = await prisma.conversation.count();
-  const firstConversation = await prisma.conversation.create({
-    data: {
-      title: `New Chat ${count + 1}`,
-    },
-  });
+  const firstConversation = await createConversation();
 
-  redirect(`/conversations/${firstConversation.id}`);
+  redirect(`/chats/${firstConversation.id}`);
 }

@@ -12,6 +12,7 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     "dist/**",
     "legacy-a4/**",
+    "legacy-a5/**",
     "next-migration-temp/**",
     "eslint.config.js.bak",
   ]),
