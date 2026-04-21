@@ -105,7 +105,7 @@ async function sendMessage() {
     console.error("stream error", error);
 
     appendMessage(
-      "Request failed. Please check the API key in js/api.js and try again.",
+      "Request failed. Please add your API key in legacy-a3/js/api.js and try again.",
       "ai",
       messageList
     );

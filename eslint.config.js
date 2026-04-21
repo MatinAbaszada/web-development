@@ -9,6 +9,11 @@ export default [
         ...globals.browser,
       },
       ecmaVersion: 2022,
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
       sourceType: "module",
     },
     rules: {
@@ -21,6 +26,6 @@ export default [
     },
   },
   {
-    ignores: ["node_modules/", ".husky/", ".next/"],
+    ignores: ["dist/", ".next/", "legacy-a3/", "node_modules/", ".husky/"],
   },
 ];

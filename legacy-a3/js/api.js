@@ -1,4 +1,5 @@
-const OPENROUTER_API_KEY = "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";
+const OPENROUTER_API_KEY = "ADD_YOUR_OPENROUTER_KEY_HERE";
+
 export async function streamCompletion(messages, model, onChunk) {
   const requestBody = {
     model: model,

@@ -1,34 +1,52 @@
 # AI Chat App
 
-Simple browser chat app that connects to OpenRouter with streaming responses.
+This branch is the React version of the chat app. It keeps the same basic layout from the earlier assignment, but the UI is split into React components and the data is loaded through small API helper files.
 
-## What it includes
+## What is in this project
 
-- Chat layout with sidebar and message area
-- Model dropdown
-- Streaming assistant reply output
-- ESLint and Prettier setup
-- `pre-commit` git hooks
+- React app built with Vite
+- Sidebar with conversations and model picker
+- Chat area with message list and message form
+- Mock conversation and message data
+- Streaming reply support for OpenRouter
+- ESLint, Prettier, and pre-commit hooks
 
-## Run
+## Old assignment files
+
+The plain HTML, CSS, and JavaScript version from the earlier branch is saved in `legacy-a3/` so the old work is still visible.
+
+## Run the app
 
 ```bash
 npm install
-open index.html
+npm run dev
 ```
 
-## Dev commands
+Vite will print a local URL in the terminal, usually `http://localhost:5173`.
+
+## API key
+
+Create a `.env.local` file in the project root and add:
 
 ```bash
-npm run lint
-npm run lint:fix
-npm run format
-npm run format:check
+VITE_OPENROUTER_API_KEY=your_key_here
 ```
 
-## Pre-commit setup
+This keeps the real key out of git. In a frontend app, this is still visible in the browser bundle, so it is fine for class demos but not for a production app.
 
-Install `pre-commit` (for example with `pipx install pre-commit`), then install hooks:
+## Useful commands
+
+```bash
+npm run dev
+npm run build
+npm run preview
+npm run lint
+npm run format
+```
+
+## Pre-commit
+
+Install `pre-commit` first if you do not already have it, then run:
 
 ```bash
 npm run precommit:install
@@ -39,11 +57,3 @@ Run hooks manually on all files:
 ```bash
 npm run precommit:run
 ```
-
-## Files
-
-- `index.html` main page
-- `style.css` styles
-- `js/main.js` app flow and event handlers
-- `js/chat.js` message rendering helpers
-- `js/api.js` OpenRouter request logic
