@@ -10,12 +10,12 @@ export async function streamCompletion(messages, model, onChunk) {
   const response = await fetch(
     "https://openrouter.ai/api/v1/chat/completions",
     {
-      method: "POST",
+    method: "POST",
       headers: {
-        Authorization: `Bearer ${OPENROUTER_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestBody),
+      Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestBody),
     }
   );
 

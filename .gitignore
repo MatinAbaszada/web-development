@@ -34,3 +34,17 @@ next-env.d.ts
 
 /next-migration-temp/
 /eslint.config.js.bak
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.log
+
+.env*
+
+*.tsbuildinfo
+next-env.d.ts
+
+/next-migration-temp/
+/eslint.config.js.bak
