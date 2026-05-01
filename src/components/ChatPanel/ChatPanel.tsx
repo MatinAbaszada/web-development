@@ -38,7 +38,6 @@ export default function ChatPanel({ chatId, initialMessages }: ChatPanelProps) {
         />
       </header>
 
-
       {errorMessage ? (
         <div className="border-t border-amber-100 bg-amber-50 px-4 py-2 text-xs text-amber-600 md:px-6">
           {errorMessage}

@@ -1,7 +1,12 @@
 import { convertToModelMessages, generateText, type UIMessage } from "ai";
 import { NextResponse } from "next/server";
 import { DEFAULT_MODEL_ID } from "@/lib/models";
-import { createMessage, getMessages, getTextFromUIMessage, getUIMessages } from "@/server/messages";
+import {
+  createMessage,
+  getMessages,
+  getTextFromUIMessage,
+  getUIMessages,
+} from "@/server/messages";
 import { getOpenRouterChatModel } from "@/server/openrouter";
 
 export const runtime = "nodejs";
