@@ -13,7 +13,9 @@ export default async function Page() {
     redirect(`/chats/${conversation.id}`);
   }
 
-  const firstConversation = await createConversation();
+  const firstConversation = await createConversation({
+    revalidate: false,
+  });
 
   redirect(`/chats/${firstConversation.id}`);
 }

@@ -54,7 +54,7 @@ export async function getLatestConversation() {
   } satisfies Conversation;
 }
 
-export async function createConversation() {
+export async function createConversation(options?: { revalidate?: boolean }) {
   const count = await prisma.conversation.count();
   const conversation = await prisma.conversation.create({
     data: {
@@ -62,8 +62,10 @@ export async function createConversation() {
     },
   });
 
-  revalidatePath("/");
-  revalidatePath(`/chats/${conversation.id}`);
+  if (options?.revalidate !== false) {
+    revalidatePath("/");
+    revalidatePath(`/chats/${conversation.id}`);
+  }
 
   return {
     id: conversation.id,

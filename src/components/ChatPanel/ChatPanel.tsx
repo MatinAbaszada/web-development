@@ -44,6 +44,8 @@ export default function ChatPanel({ chatId, initialMessages }: ChatPanelProps) {
         </div>
       ) : null}
 
+      <MessageList messages={messages} isLoading={isLoading} />
+
       <MessageComposer
         onSendMessage={sendMessage}
         isLoading={isLoading}
